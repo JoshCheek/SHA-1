@@ -1,3 +1,4 @@
+require 'spec_helper'
 require './lib/preprocessor'
 require 'minitest/autorun'
 require 'minitest/pride'

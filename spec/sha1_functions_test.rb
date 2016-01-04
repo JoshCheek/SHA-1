@@ -1,3 +1,4 @@
+require 'spec_helper'
 require './lib/sha1_functions'
 require 'minitest/autorun'
 require 'minitest/pride'
