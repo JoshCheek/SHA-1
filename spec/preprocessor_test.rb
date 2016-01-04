@@ -8,28 +8,10 @@ class PreprocessorTest < Minitest::Test
     @p = Preprocessor.new
   end
 
-  def test_converts_ascii_number_97_to_binary
-    expected = '01100001'
-
-    assert_equal expected, @p.byte_to_binary(97)
-  end
-
-  def test_converts_ascii_number_65_to_binary
-    expected = '01000001'
-
-    assert_equal expected, @p.byte_to_binary(65)
-  end
-
-  def test_converts_ascii_number_24_to_binary
-    expected = '00011000'
-
-    assert_equal expected, @p.byte_to_binary(24)
-  end
-
-  def test_converts_ascii_number_0_to_binary
-    expected = '00000000'
-
-    assert_equal expected, @p.byte_to_binary(0)
+  def test_converts_ascii_numbers_to_a_binary_string_with_eight_characters
+    assert_equal '00000000', @p.byte_to_binary(0)
+    assert_equal '01100001', @p.byte_to_binary(97)
+    assert_equal '11111111', @p.byte_to_binary(0b11111111)
   end
 
   def test_word_to_binary_returns_empty_string_for_empty_string
