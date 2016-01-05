@@ -4,65 +4,63 @@ require 'minitest/autorun'
 require 'minitest/pride'
 
 class PreprocessorTest < Minitest::Test
-  def setup
-    @p = Preprocessor.new
-  end
-
+  include Preprocessor
+  include Conversions
   def test_converts_ascii_numbers_to_a_binary_string_with_eight_characters
-    assert_equal '00000000', @p.byte_to_binary(0)
-    assert_equal '01100001', @p.byte_to_binary(97)
-    assert_equal '11111111', @p.byte_to_binary(0b11111111)
+    assert_equal '00000000', byte_to_binary(0)
+    assert_equal '01100001', byte_to_binary(97)
+    assert_equal '11111111', byte_to_binary(0b11111111)
   end
 
   def test_word_to_binary_returns_empty_string_for_empty_string
-    assert_equal '', @p.word_to_binary('')
+    assert_equal '', word_to_binary('')
   end
 
   def test_converts_lower_case_letter_to_binary
     expected = '01100001'
 
-    assert_equal expected, @p.word_to_binary('a')
+    assert_equal expected, word_to_binary('a')
   end
 
   def test_converts_different_lower_case_letter_to_binary
     expected = '01111010'
 
-    assert_equal expected, @p.word_to_binary('z')
+    assert_equal expected, word_to_binary('z')
   end
 
   def test_converts_upper_case_letter_to_binary
     expected = '01000100'
 
-    assert_equal expected, @p.word_to_binary('D')
+    assert_equal expected, word_to_binary('D')
   end
 
   def test_converts_different_upper_case_letter_to_binary
     expected = '01010110'
 
-    assert_equal expected, @p.word_to_binary('V')
+    assert_equal expected, word_to_binary('V')
   end
 
   def test_converts_entire_string_to_binary
     expected = '011000010110001001100011'
 
-    assert_equal expected, @p.word_to_binary('abc')
+    assert_equal expected, word_to_binary('abc')
   end
 
   def test_calculates_number_of_blocks_for_small_string
-    assert_equal 1, @p.number_of_blocks('abc')
+    assert_equal 1, number_of_blocks('abc')
   end
 
   def test_calculates_number_of_blocks_for_large_string
     message = 'a' * 60
 
-    assert_equal 2, @p.number_of_blocks(message)
+    assert_equal 2, number_of_blocks(message)
   end
 
   def test_creates_string_of_all_zeros_in_multiple_of_512
     expected = '0' * 512
 
-    assert_equal expected, @p.zero_string(1)
-    assert_equal expected * 2, @p.zero_string(2)
+    assert_equal expected, zero_string(1)
+    assert_equal expected * 2, zero_string(2)
   end
 
   def test_adds_message_and_one_bit_to_front_of_zero_string_for_short_message
@@ -71,7 +69,7 @@ class PreprocessorTest < Minitest::Test
     zeros = '0' * 487
     expected = '011000010110001001100011' + '1' + zeros
 
-    assert_equal expected, @p.add_message_and_one_bit(message)
+    assert_equal expected, add_message_and_one_bit(message)
   end
 
   def test_adds_message_and_one_bit_to_front_of_zero_string_for_long_message
@@ -80,27 +78,27 @@ class PreprocessorTest < Minitest::Test
     zeros = '0' * 543
     expected = '011000010110001001100011' * 20 + '1' + zeros
 
-    assert_equal expected, @p.add_message_and_one_bit(message)
+    assert_equal expected, add_message_and_one_bit(message)
   end
 
   def test_encodes_message_length_as_sixty_four_bit_string
     message = 'abc'
     expected = ('0' * 56) + '00011000'
 
-    assert_equal expected, @p.sixty_four_bit_encoded_message_length(message)
+    assert_equal expected, sixty_four_bit_encoded_message_length(message)
   end
 
   def test_encodes_long_message_length_as_sixty_four_bit_string
     message = 'abcde' * 20
     expected = ('0' * 54) + '1100100000'
 
-    assert_equal expected, @p.sixty_four_bit_encoded_message_length(message)
+    assert_equal expected, sixty_four_bit_encoded_message_length(message)
   end
 
   def test_divides_message_into_512_bit_slices_for_short_message
     binary = "01100001011000100110001101100100011001010110000101100010011000110110010001100101011000010110001001100011011001000110010101100001011000100110001101100100011001010110000101100010011000110110010001100101011000010110001001100011011001000110010101100001011000100110001101100100011001010110000101100010011000110110010001100101011000010110001001100011011001000110010101100001011000100110001101100100011001010110000101100010011000110110010001100101011000010110001001100011011001000110010101100001011000100110001101100100"
 
-    assert_equal [binary], @p.divide_into_512_bit_slices(binary)
+    assert_equal [binary], divide_into_512_bit_slices(binary)
   end
 
   def test_divides_message_into_512_bit_slices_for_long_message
@@ -108,7 +106,7 @@ class PreprocessorTest < Minitest::Test
 
     expected = ["01100001011000100110001101100100011001010110000101100010011000110110010001100101011000010110001001100011011001000110010101100001011000100110001101100100011001010110000101100010011000110110010001100101011000010110001001100011011001000110010101100001011000100110001101100100011001010110000101100010011000110110010001100101011000010110001001100011011001000110010101100001011000100110001101100100011001010110000101100010011000110110010001100101011000010110001001100011011001000110010101100001011000100110001101100100", "01100101011000010110001001100011011001000110010101100001011000100110001101100100011001010110000101100010011000110110010001100101011000010110001001100011011001000110010101100001011000100110001101100100011001010110000101100010011000110110010001100101011000010110001001100011011001000110010110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001100100000"]
 
-    assert_equal expected, @p.divide_into_512_bit_slices(binary)
+    assert_equal expected, divide_into_512_bit_slices(binary)
   end
 
   def test_adds_length_as_64_bit_encoded_to_end_of_string_for_short_message
@@ -118,8 +116,8 @@ class PreprocessorTest < Minitest::Test
     zeros = '0' * 423
     expected = '011000010110001001100011' + '1' + zeros + binary_length
 
-    assert_equal [expected], @p.preprocess(message)
-    assert_equal 512, @p.preprocess(message).first.length
+    assert_equal [expected], preprocess(message)
+    assert_equal 512, preprocess(message).first.length
   end
 
   def test_adds_length_as_64_bit_encoded_to_end_of_string_for_long_message
@@ -127,8 +125,8 @@ class PreprocessorTest < Minitest::Test
 
     expected = ["01100001011000100110001101100100011001010110000101100010011000110110010001100101011000010110001001100011011001000110010101100001011000100110001101100100011001010110000101100010011000110110010001100101011000010110001001100011011001000110010101100001011000100110001101100100011001010110000101100010011000110110010001100101011000010110001001100011011001000110010101100001011000100110001101100100011001010110000101100010011000110110010001100101011000010110001001100011011001000110010101100001011000100110001101100100", "01100101011000010110001001100011011001000110010101100001011000100110001101100100011001010110000101100010011000110110010001100101011000010110001001100011011001000110010101100001011000100110001101100100011001010110000101100010011000110110010001100101011000010110001001100011011001000110010110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001100100000"]
 
-    assert_equal expected, @p.preprocess(message)
-    assert_equal 1024, @p.preprocess(message).join.length
+    assert_equal expected, preprocess(message)
+    assert_equal 1024, preprocess(message).join.length
   end
 
   def test_preprocesses_test_message
@@ -138,6 +136,6 @@ class PreprocessorTest < Minitest::Test
       "01000001001000000101010001100101011100110111010010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000110000"
     ]
 
-    assert_equal expected, @p.preprocess(message)
+    assert_equal expected, preprocess(message)
   end
 end
