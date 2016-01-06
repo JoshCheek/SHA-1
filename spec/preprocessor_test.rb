@@ -16,13 +16,20 @@ class PreprocessorTest < Minitest::Test
     assert_equal expected_binary, word_to_binary(word)
   end
 
-  def test_word_to_binary_converts_strings_to_binary
-    assert_word_to_binary '',    ''
-    assert_word_to_binary 'abcD',
-                          '01100001' +
-                          '01100010' +
-                          '01100011' +
-                          '01000100'
+  def test_word_to_binary_returns_a_string_where_each_character_is_replaced_by_its_binary
+    assert_word_to_binary '', ''
+    assert_word_to_binary 'abcD', '01100001' +
+                                  '01100010' +
+                                  '01100011' +
+                                  '01000100'
+  end
+
+  def test_the_characters_binary_is_an_8_digit_string_of_1s_and_0s_based_on_its_ascii_value
+    ascii_a = '01100001'
+    assert_equal 8,   ascii_a.length
+    assert_equal "a", ascii_a.to_i(2).chr
+    assert_equal ascii_a, word_to_binary("a")
+    refute_equal ascii_a, word_to_binary("b")
   end
 
   def test_calculates_number_of_blocks_for_small_string
