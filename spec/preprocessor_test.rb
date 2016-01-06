@@ -12,25 +12,17 @@ class PreprocessorTest < Minitest::Test
     assert_equal '11111111', byte_to_binary(0b11111111)
   end
 
-  def test_word_to_binary_returns_empty_string_for_empty_string
-    assert_equal '', word_to_binary('')
+  def assert_word_to_binary(word, expected_binary)
+    assert_equal expected_binary, word_to_binary(word)
   end
 
   def test_word_to_binary_converts_strings_to_binary
-    expected = '01100001'
-    assert_equal expected, word_to_binary('a')
-
-    expected = '01111010'
-    assert_equal expected, word_to_binary('z')
-
-    expected = '01000100'
-    assert_equal expected, word_to_binary('D')
-
-    expected = '01010110'
-    assert_equal expected, word_to_binary('V')
-
-    expected = '011000010110001001100011'
-    assert_equal expected, word_to_binary('abc')
+    assert_word_to_binary '',    ''
+    assert_word_to_binary 'a',   '01100001'
+    assert_word_to_binary 'z',   '01111010'
+    assert_word_to_binary 'D',   '01000100'
+    assert_word_to_binary 'V',   '01010110'
+    assert_word_to_binary 'abc', '011000010110001001100011'
   end
 
   def test_calculates_number_of_blocks_for_small_string
