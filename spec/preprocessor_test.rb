@@ -18,11 +18,11 @@ class PreprocessorTest < Minitest::Test
 
   def test_word_to_binary_converts_strings_to_binary
     assert_word_to_binary '',    ''
-    assert_word_to_binary 'a',   '01100001'
-    assert_word_to_binary 'z',   '01111010'
-    assert_word_to_binary 'D',   '01000100'
-    assert_word_to_binary 'V',   '01010110'
-    assert_word_to_binary 'abc', '011000010110001001100011'
+    assert_word_to_binary 'abcD',
+                          '01100001' +
+                          '01100010' +
+                          '01100011' +
+                          '01000100'
   end
 
   def test_calculates_number_of_blocks_for_small_string
