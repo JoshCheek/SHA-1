@@ -6,17 +6,9 @@ module WordOperations
   end
 
   def bitwise_exclusive_or(arr)
-    return arr.shift if arr.length == 1
-
-    left = arr.shift
-    right = bitwise_exclusive_or(arr)
-
-    exclusive_or(left, right)
-  end
-
-  def exclusive_or(left, right)
-    str = (left.to_i(2) ^ right.to_i(2)).to_s(2)
-    pad_front_with_zeros(left.length, str)
+    num_bits = (arr.first||"").length
+    result   = arr.inject(0) { |result, binary| result ^ binary.to_i(2) }
+    pad_front_with_zeros num_bits, result.to_s(2)
   end
 
   def bitwise_and(a, b)
